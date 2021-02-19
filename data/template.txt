@@ -1,0 +1,4 @@
+Images should be downloaded as -> 
+brand-index-price.jpg
+
+FROM a csv that's imageurl,brand,price
