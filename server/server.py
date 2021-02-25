@@ -4,9 +4,9 @@ app = Flask(__name__)
 
 CLASSIFIER = fastai.load_learner("../models", "classifier.pkl")
 
-@app.route("/classify") # , methods=["POST", "OPTIONS"])
+@app.route("/classify",  methods=["POST", "OPTIONS"])
 def classify():
-  # files = request.files
+  files = request.files
   image = fastai.image.open_image("./alang.jpg")
   prediction = CLASSIFIER.predict(image)
 
