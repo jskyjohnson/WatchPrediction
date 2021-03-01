@@ -1,6 +1,9 @@
 from flask import Flask, request
 import fastai.vision as fastai
+from flask_cors import CORS
+
 app = Flask(__name__)
+cors = CORS(app)
 
 CLASSIFIER = fastai.load_learner("../models", "classifier.pkl")
 

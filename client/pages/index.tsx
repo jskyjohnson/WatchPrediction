@@ -1,8 +1,8 @@
 import Head from "next/head";
 import React, { useState } from "react";
 import axios from "axios";
-
-import styles from "../styles/Home.module.css";
+import { Box, Container, Grid, Typography } from "@material-ui/core";
+import Footer from "../src/Footer";
 
 const API_ENDPOINT = "http://localhost:8000/";
 
@@ -13,6 +13,8 @@ const API_CLIENT = axios.create({
 
 const Home = () => {
   const [imageSrc, setImageSrc] = useState("");
+
+  const [brandPredict, setBrandPredict] = useState({ predictions: null });
 
   let ImagePreview;
   if (imageSrc) {
@@ -35,46 +37,75 @@ const Home = () => {
     reader.onloadend = (e) => {
       setImageSrc(reader.result as any);
     };
-    // var data = new FormData();
-    // data.append("image", targetFile);
-    // API_CLIENT.post("/classify", data, {
-    //   headers: { "Content-Type": targetFile.type },
-    // })
-    //   .then((response) => {
-    //     // this.setState({ predictions: response.data });
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    var data = new FormData();
+    data.append("image", targetFile);
+    API_CLIENT.post("/classify", data, {
+      headers: { "Content-Type": targetFile.type },
+    })
+      .then((response) => {
+        setBrandPredict({ predictions: response.data.brandPredictions });
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
-    <div className={styles.App}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main>
-        <p> hello what the hewck is going on???</p>
-        <div
-          className={styles.dropzone}
-          onDragOver={(e) => {
-            _onDragOver(e);
-          }}
-          onDragLeave={(e) => {
-            _onDragLeave(e);
-          }}
-          onDrop={(e) => {
-            _onDrop(e);
-          }}
-        >
-          {ImagePreview}
-        </div>
-      </main>
-
-      <footer></footer>
-    </div>
+    <Container maxWidth="md">
+      <Box my={10}>
+        <Typography variant="h4" component="h1">
+          Watch brand predictor.
+        </Typography>
+        <Box mt={5}>
+          <Typography>
+            Drag and drop an image into the square to see my model's prediction
+            on model and price estimations. (210x210p works best)
+          </Typography>
+        </Box>
+      </Box>
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+        spacing={2}
+      >
+        <Grid item>
+          <div
+            style={{
+              height: "210px",
+              width: "210px",
+              border: "2px dashed black",
+            }} //height: 210px; width: 210px; background-color: mistyrose; border: 2px dashed gray;
+            onDragOver={(e) => {
+              _onDragOver(e);
+            }}
+            onDragLeave={(e) => {
+              _onDragLeave(e);
+            }}
+            onDrop={(e) => {
+              _onDrop(e);
+            }}
+          >
+            {ImagePreview}
+          </div>
+        </Grid>
+        <Grid item>
+          {brandPredict.predictions ? (
+            <Box>
+              <Typography>TESTING</Typography>
+            </Box>
+          ) : (
+            <Typography>
+              {" "}
+              Please drag an image into the box on the left
+            </Typography>
+          )}
+        </Grid>
+      </Grid>
+      <Footer />
+    </Container>
   );
 };
 
