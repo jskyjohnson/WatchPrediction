@@ -18,7 +18,9 @@ const Home = () => {
 
   let ImagePreview;
   if (imageSrc) {
-    ImagePreview = <img src={imageSrc} alt="img-of-a-watch" />;
+    ImagePreview = (
+      <img style={{ width: "210px" }} src={imageSrc} alt="img-of-a-watch" />
+    );
   }
 
   const _onDragOver = (e: any) => {
@@ -44,7 +46,6 @@ const Home = () => {
     })
       .then((response) => {
         setBrandPredict({ predictions: response.data.brandPredictions });
-        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -60,7 +61,7 @@ const Home = () => {
         <Box mt={5}>
           <Typography>
             Drag and drop an image into the square to see my model's prediction
-            on model and price estimations. (210x210p works best)
+            on brand and price estimations. (210x210p works best)
           </Typography>
         </Box>
       </Box>
@@ -72,12 +73,12 @@ const Home = () => {
         spacing={2}
       >
         <Grid item>
-          <div
+          <Box
             style={{
               height: "210px",
               width: "210px",
-              border: "2px dashed black",
-            }} //height: 210px; width: 210px; background-color: mistyrose; border: 2px dashed gray;
+              border: ImagePreview ? "none" : "2px dashed black",
+            }}
             onDragOver={(e) => {
               _onDragOver(e);
             }}
@@ -88,17 +89,31 @@ const Home = () => {
               _onDrop(e);
             }}
           >
-            {ImagePreview}
-          </div>
+            <Box>{ImagePreview}</Box>
+          </Box>
         </Grid>
         <Grid item>
           {brandPredict.predictions ? (
             <Box>
-              <Typography>TESTING</Typography>
+              <Typography
+                variant="h4"
+                component="h3"
+                style={{ marginBottom: "2vh" }}
+              >
+                I think it's a
+              </Typography>
+              {brandPredict.predictions
+                .filter((item) => item[1] > 0.01)
+                .map((item, i, arr) => (
+                  <Typography>
+                    {i === arr.length - 1 && arr.length !== 1 ? "and a" : ""}{" "}
+                    {item[0]} by {(item[1] * 100).toFixed(2)}%
+                    {i === arr.length - 1 ? "." : ","}
+                  </Typography>
+                ))}
             </Box>
           ) : (
             <Typography>
-              {" "}
               Please drag an image into the box on the left
             </Typography>
           )}

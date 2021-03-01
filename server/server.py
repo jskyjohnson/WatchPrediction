@@ -7,24 +7,26 @@ cors = CORS(app)
 
 CLASSIFIER = fastai.load_learner("../models", "classifier.pkl")
 
+
 @app.route("/classify",  methods=["POST", "OPTIONS"])
 def classify():
-  files = request.files
-  image = fastai.image.open_image("./alang.jpg")
-  prediction = CLASSIFIER.predict(image)
+    files = request.files
+    image = fastai.image.open_image(files['image'])
+    prediction = CLASSIFIER.predict(image)
 
-  return {
-    "brandPredictions": sorted(
-      list(
-        zip(
-          CLASSIFIER.data.classes,
-          [round(x,4) for x in map(float, prediction[2])]
+    return {
+        "brandPredictions": sorted(
+            list(
+                zip(
+                    CLASSIFIER.data.classes,
+                    [round(x, 4) for x in map(float, prediction[2])]
+                )
+            ),
+            key=lambda p: p[1],
+            reverse=True
         )
-      ),
-      key=lambda p: p[1],
-      reverse=True
-    )
-  }
+    }
+
 
 if __name__ == "__main__":
-  app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=8000, debug=True)
