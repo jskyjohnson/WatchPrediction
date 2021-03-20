@@ -6,6 +6,7 @@ app = Flask(__name__)
 cors = CORS(app)
 
 CLASSIFIER = fastai.load_learner("../models", "classifier.pkl")
+REGRESSION = fastai.load_learner("../models", "regression.pkl")
 
 
 @app.route("/classify",  methods=["POST", "OPTIONS"])
@@ -13,8 +14,10 @@ def classify():
     files = request.files
     image = fastai.image.open_image(files['image'])
     prediction = CLASSIFIER.predict(image)
+    price_prediction = REGRESSION.predict(image)
 
     return {
+        "pricePrediction": round(float(price_prediction[1]), 2),
         "brandPredictions": sorted(
             list(
                 zip(

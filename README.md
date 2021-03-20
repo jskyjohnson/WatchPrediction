@@ -7,3 +7,9 @@ TO RUN WEB SCRAPER
 
 ## Model Trainer
 To run the models, open in jupyter lab. Trained on Cuda 11.0 Pytorch, yatta
+
+## TO RUN CLIENT
+yarn dev
+
+## TO RUN SERVER
+python server/server.py

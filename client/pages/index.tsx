@@ -15,6 +15,7 @@ const Home = () => {
   const [imageSrc, setImageSrc] = useState("");
 
   const [brandPredict, setBrandPredict] = useState({ predictions: null });
+  const [pricePredict, setPricePredict] = useState(0);
 
   let ImagePreview;
   if (imageSrc) {
@@ -46,6 +47,7 @@ const Home = () => {
     })
       .then((response) => {
         setBrandPredict({ predictions: response.data.brandPredictions });
+        setPricePredict(response.data.pricePrediction);
       })
       .catch((error) => {
         console.log(error);
@@ -95,22 +97,44 @@ const Home = () => {
         <Grid item>
           {brandPredict.predictions ? (
             <Box>
-              <Typography
-                variant="h4"
-                component="h3"
-                style={{ marginBottom: "2vh" }}
-              >
-                I think it's a
-              </Typography>
               {brandPredict.predictions
-                .filter((item) => item[1] > 0.01)
-                .map((item, i, arr) => (
-                  <Typography>
-                    {i === arr.length - 1 && arr.length !== 1 ? "and a" : ""}{" "}
-                    {item[0]} by {(item[1] * 100).toFixed(2)}%
-                    {i === arr.length - 1 ? "." : ","}
-                  </Typography>
-                ))}
+                .filter((item) => item[1] > 0.001)
+                .map((item, i, arr) =>
+                  i === 0 ? (
+                    <>
+                      <Typography
+                        variant="h4"
+                        component="h3"
+                        style={{ marginBottom: "2vh" }}
+                      >
+                        I think it's a {item[0]} by {(item[1] * 100).toFixed(2)}
+                        %
+                      </Typography>
+                      {arr.length > 1 ? (
+                        <Typography
+                          variant="h5"
+                          component="h5"
+                          style={{ marginBottom: "1vh" }}
+                        >
+                          but it could also be a:
+                        </Typography>
+                      ) : null}
+                    </>
+                  ) : (
+                    <Typography>
+                      {i === arr.length - 1 && arr.length !== 1 ? "and a" : ""}{" "}
+                      {item[0]} by {(item[1] * 100).toFixed(2)}%
+                      {i === arr.length - 1 ? "." : ","}
+                    </Typography>
+                  )
+                )}
+              <Typography
+                variant="h5"
+                component="h4"
+                style={{ marginTop: "2vh" }}
+              >
+                And it's probably worth about ${pricePredict}
+              </Typography>
             </Box>
           ) : (
             <Typography>
