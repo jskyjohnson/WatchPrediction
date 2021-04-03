@@ -1,0 +1,46 @@
+FROM raspbian/stretch
+
+WORKDIR /app
+
+ADD . .
+
+RUN useradd fastai-user
+
+RUN apt update -y
+
+RUN apt upgrade -y
+
+RUN apt install -y sudo git build-essential vim wget gfortran libatlas3-base libopenblas-dev libblas-dev m4 cmake cython python-dev python-yaml python-setuptools python-wheel 
+
+#Reinstall Python
+RUN apt install -y software-properties-common
+
+RUN export LANG=en_US.UTF-8
+
+RUN wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz
+
+RUN sudo tar zxf Python*.tgz
+
+RUN ls -a
+
+WORKDIR /app/Python-3.7.3
+
+RUN ls -a
+
+RUN apt -y install zlib1g-dev gcc python-pip python-smbus libncursesw5-dev libgdbm-dev libc6-dev zlib1g-dev libsqlite3-dev tk-dev libssl-dev openssl libffi-dev
+
+RUN ./configure --enable-optimizations
+
+RUN sudo make
+
+RUN sudo make install
+
+#RUN apt install -y python3.7
+
+
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.5 2
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python2 1
+RUN update-alternatives --install /usr/bin/python python /usr/local/bin/python3.7 20
+
+RUN which python
+RUN python --version
