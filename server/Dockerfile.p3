@@ -1,0 +1,25 @@
+FROM fastai_p2
+
+RUN pip install numpy
+
+RUN pip install Pillow==8.1.2
+
+RUN pip install --upgrade pip setuptools wheel
+
+RUN apt install -y gfortran
+
+RUN pip install scipy==1.6.1
+
+RUN pip install -r requirements-pi-freeze.txt
+
+RUN pip install torch-*.whl
+
+RUN pip install torchvision*.whl
+
+RUN pip install fastai==1.0.57 --no-deps
+
+ADD server.py server.py
+
+ADD regression.pkl regression.pkl
+
+ADD classifier.pkl classifier.pkl

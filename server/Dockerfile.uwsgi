@@ -1,0 +1,29 @@
+FROM fastai_p3
+
+RUN apt --reinstall install -y libatlas3-base libopenblas-dev libblas-dev m4 cmake cython python-dev python-yaml python-setuptools python-wheel
+
+RUN ./pytorch-rpi/build_libtorch.sh
+
+RUN pip install --force-reinstall beautifulsoup4 bottleneck matplotlib numexpr scipy nvidia-ml-py3 fastprogress>=0.2.1 packaging pyyaml requests
+
+ADD torchvision-0.8.0a0+45f960c-cp37-cp37m-linux_armv7l.whl torchvision-0.8.0a0+45f960c-cp37-cp37m-linux_armv7l.whl
+
+RUN pip install --force-reinstall torch-1.7.0a0-cp37-cp37m-linux_armv7l.whl
+
+RUN pip install --force-reinstall torchvision-0.8.0a0+45f960c-cp37-cp37m-linux_armv7l.whl
+
+RUN pip install fastai==1.0.57 --no-deps
+
+ADD requirements-uwsgi.txt requirements-uwsgi.txt
+
+RUN pip install -r requirements-uwsgi.txt
+
+ADD server.py server.py
+
+ADD test.py test.py
+
+ADD app.ini app.ini
+
+ADD app.py app.py
+
+CMD ["uwsgi" , "app.ini"]

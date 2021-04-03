@@ -1,2 +1,4 @@
 pytorch-armv7l/
 env
+pytorch-rpi
+__pycache__

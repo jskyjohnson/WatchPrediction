@@ -1,0 +1,19 @@
+networks:
+  default:
+    external:
+        name: nginx_default
+services:
+  nginx:
+    build: ./nginx
+    container_name: watch_predict_nginx
+    restart: always
+    ports:
+        - 7001:80
+  server:
+    image: fastai_uwsgi
+    container_name: watch_predict
+    restart: always
+    expose:
+      - 8080
+version: '3.7'
+

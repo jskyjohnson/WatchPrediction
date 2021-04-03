@@ -1,0 +1,36 @@
+FROM raspbian/stretch
+
+WORKDIR /app
+
+ADD . .
+
+RUN useradd fastai-user
+
+RUN apt update 
+
+RUN apt upgrade -y
+
+RUN apt install -y sudo git
+
+ENV LIBTORCH_VARIANT=armv7l-cxx11-abi-shared-without-deps
+
+RUN ls -a
+
+RUN ./pytorch-rpi/build_libtorch.sh
+
+RUN pip install numpy
+
+RUN pip install Pillow==8.1.2
+
+RUN pip install -r requirements-pi-freeze.txt
+
+RUN pip install torch-*.whl
+
+RUN pip install torchvision*.whl
+
+RUN pip install fastai==1.0.57 --no-deps
+
+
+
+
+CMD ["python", "server.py"]

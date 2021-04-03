@@ -1,0 +1,9 @@
+FROM fastai_p1
+
+ENV LIBTORCH_VARIANT=armv7l-cxx11-abi-shared-without-deps
+
+RUN ls -a
+
+ADD . .
+
+RUN ./pytorch-rpi/build_libtorch.sh 
